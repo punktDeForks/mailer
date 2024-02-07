@@ -143,20 +143,7 @@ class EsmtpTransport extends SmtpTransport
 
         /** @var SocketStream $stream */
         $stream = $this->getStream();
-        // WARNING: !$stream->isTLS() is right, 100% sure :)
-        // if you think that the ! should be removed, read the code again
-        // if doing so "fixes" your issue then it probably means your SMTP server behaves incorrectly or is wrongly configured
-        if (!$stream->isTLS() && \defined('OPENSSL_VERSION_NUMBER') && \array_key_exists('STARTTLS', $this->capabilities)) {
-            $this->executeCommand("STARTTLS\r\n", [220]);
-
-            if (!$stream->startTLS()) {
-                throw new TransportException('Unable to connect with STARTTLS.');
-            }
-
-            $response = $this->executeCommand(sprintf("EHLO %s\r\n", $this->getLocalDomain()), [250]);
-            $this->capabilities = $this->parseCapabilities($response);
-        }
-
+// Removed STARTTLS
         if (\array_key_exists('AUTH', $this->capabilities)) {
             $this->handleAuth($this->capabilities['AUTH']);
         }
